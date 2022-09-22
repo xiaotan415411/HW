@@ -85,10 +85,17 @@ void InitData(ElemType* data) {
 
 int main(){
     DLinkNode ha,hb;
+    int i = 0;
     InitData(data);
     CreateCirDLink(&ha,data,MaxSize);
     CreateCirDLink(&hb,data,MaxSize);
     ShowCirDLink(&ha);
-    Insert(&ha,&hb,0);
-    ShowCirDLink(&ha);
+    printf("input i:");
+    scanf("%d",&i);
+    Insert(&ha,&hb,i);
+    if(i == 0)
+        ShowCirDLink(&hb);
+    else
+        ShowCirDLink(&ha);
+    return 0;
 }
