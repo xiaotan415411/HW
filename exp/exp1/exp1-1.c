@@ -70,16 +70,17 @@ void PrintElem(SLinkNode* h, int loc) {
 
 void PrintLocation(SLinkNode* h, ElemType a) {
 	SLinkNode* p = h;
-	int loc = 0;
+	int loc = 0,i = 0;
 	while ((p = p->next) != 0) {
 		loc++;
 		if (p->data == a) {
 			printf("Element %c is in Node_%d\n", a, loc);
-			return;
+			i = 1;
 		}
 	}
-	printf("Element A not found!\n");
-	return;
+	if(i != 1)
+		printf("Element A not found!\n");
+	else return;
 }
 
 void InsertBeforeElem(SLinkNode* h, ElemType f, int loc) {
@@ -131,12 +132,12 @@ void DeleteElem(SLinkNode* h, int loc) {
 	if (p->next == 0) {
 		s->next = 0;
 		free(p);
-		printf("Deleted.\n");
+		printf("Deleted Node_%d\n",loc);
 		return;
 	} else {
 		s->next = p->next;
 		free(p);
-		printf("Deleted.\n");
+		printf("Deleted Node_%d\n",loc);
 		return;
 	}
 }
@@ -163,22 +164,12 @@ int main() {
 	PrintLink(h);
 	PrintLength(h);
 	isEmpty(h);
-	PrintElem(h, 5);
+	PrintElem(h, 3);
 	PrintLocation(h, 'a');
-	InsertBeforeElem(h, 'f', 4);
+	InsertBeforeElem(h, 'f',4);
 	PrintLink(h);
 	DeleteElem(h, 3);
 	PrintLink(h);
 	ReleaseLink(h);
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
