@@ -89,15 +89,16 @@ void exp_to_postexp(char* exp, char* postexp, SeqStack* OptSt) {
 	int i = 0;
 	char ch;
 	Elemtype recv;
-	while ((ch = exp[i++]) != '\0') {
+	while ((ch = exp[i]) != '\0') {
 		switch (ch) {
 			case '(':
 				Push_Seq(OptSt, ch);
+				i++;
 				break;
 			case ')':
 				for (Pop_Seq(OptSt, &recv); recv != '('; Pop_Seq(OptSt, &recv))
 					strncat(postexp, &recv,1);
-				recv = '\0';
+				i++;
 				break;
 			case '+':
 			case '-':
@@ -110,6 +111,7 @@ void exp_to_postexp(char* exp, char* postexp, SeqStack* OptSt) {
 						break;
 				}
 				Push_Seq(OptSt, ch);
+				i++;
 				break;
 			case '*':
 			case '/':
@@ -123,16 +125,19 @@ void exp_to_postexp(char* exp, char* postexp, SeqStack* OptSt) {
 						break;
 				}
 				Push_Seq(OptSt, ch);
+				i++;
 				break;
 		default:
 			if (ch >= '0' && ch <= '9') {
-				strncat(postexp, &ch, 1);
-				continue;
+				while(ch >= '0' && ch <= '9'){
+					strncat(postexp, &ch, 1);
+					ch = exp[++i];
+				}
 			}else{
 				printf("wrong exp. please check.\n");
 				return;
 			}
-			strncat(postexp, "#", 1);
+			strncat(postexp, "#", 2);
 		}
 	}
 	while (OptSt->top != -1) {
