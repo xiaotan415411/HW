@@ -6,38 +6,47 @@ typedef struct SNode{
     struct SNode* next;
 }SLinkNode;
 
-void reverse(SLinkNode* head,int left,int right){
-    if(left == right){
-        printf("ok.\n");
-        return;
-    }
-    SLinkNode* Left = head,*t,*s,*Lprev,*end;
+SLinkNode* reverse(SLinkNode* head,int left,int right){
+    if(left == right)
+        return head;
+    SLinkNode* Left = head,*t,*s,*Lprev = head,*end;
     for (int i = 1; i < left;)
     {
         Left = Left->next;
         i++;
-        if(i == left - 1)
+        if(left > 2 && i == left - 1)
             Lprev = Left;
     }
     t = (SLinkNode*)malloc(sizeof(SLinkNode));
     t->data = Left->data;
     s = t;
     end = t;
-    Left = Left->next;
     for(int i = 0;i < right - left;i++){
         t = (SLinkNode*)malloc(sizeof(SLinkNode));
+        Left = Left->next;
         t->data = Left->data;
         t->next = s;
         s = t;
     }
-    if(Left->next == 0)
-        end->next = 0;
-    else
-        end = Left->next;
-    Lprev->next = s;
+        end->next = Left->next;
+    if(left == 1)
+       return s;
+    else{
+        Lprev->next = s;
+        return head;
+    }
 }
 
-void CreateSLink(SLinkNode* head,int* data,int amount){
+int GetLength(SLinkNode* head){
+    int len = 1;
+    SLinkNode* p = head;
+    while((p = p->next) != 0)
+        len++;
+    return len;
+}
+
+SLinkNode* CreateSLink(SLinkNode* head,int* data,int amount){
+    head = (SLinkNode*)malloc(sizeof(SLinkNode));
     SLinkNode* s,*r;
     r = head;
     head->data = data[0];
@@ -48,6 +57,7 @@ void CreateSLink(SLinkNode* head,int* data,int amount){
         r = s;
     }
     r->next = 0;
+    return head;
 }
 
 void ShowList(SLinkNode* head) {
@@ -60,10 +70,10 @@ void ShowList(SLinkNode* head) {
 }
 
 int main(){
-    int data[] = {1,2,3,4,5,6,7,8};
-    SLinkNode head;
-    CreateSLink(&head,data,8);
-    reverse(&head,2,4);
-    ShowList(&head);
+    int data[] = {1};
+    SLinkNode* head = CreateSLink(head,data,1);
+    // printf("%d\n",GetLength(&head));
+    head = reverse(head,1,1);
+    ShowList(head);
     return 0;
 }
