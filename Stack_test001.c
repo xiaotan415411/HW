@@ -12,6 +12,12 @@ typedef struct SNode {
 	Elemtype data;
 	struct SNode* next;
 } LinkStack;
+typedef struct
+{
+	double data[MaxSize];
+	int top;
+} OptNumStack;
+
 
 void InitSeqStack(SeqStack* s) {
 	s->top = -1;
@@ -28,6 +34,17 @@ void Push_Seq(SeqStack* s, Elemtype x) {
 	}
 	s->top++;
 	s->data[s->top] = x;
+	printf("pushed.(seq)\n");
+	return;
+}
+
+void Push_OptNum(OptNumStack* OptNum,double x){
+	if (OptNum->top == MaxSize - 1) {
+		printf("full!\n");
+		return;
+	}
+	OptNum->top++;
+	OptNum->data[OptNum->top] = x;
 	printf("pushed.(seq)\n");
 	return;
 }
@@ -65,6 +82,17 @@ void Pop_Link(LinkStack* head, Elemtype* e) {
 	return;
 }
 
+void Pop_OptNum(OptNumStack* s, double* e) {
+	if (s->top == -1) {
+		printf("empty!\n");
+		return;
+	}
+	*e = s->data[s->top];
+	s->top--;
+	printf("popped.(seq)\n");
+	return;
+}
+
 void GetTop_Seq(SeqStack* s, Elemtype* e) {
 	if (s->top == -1) {
 		printf("empty!\n");
@@ -82,6 +110,16 @@ void GetTop_Link(LinkStack* head, Elemtype* e) {
 	}
 	*e = head->next->data;
 	printf("got.(link)\n");
+	return;
+}
+
+void GetTop_OptNum(OptNumStack* s, double* e) {
+	if (s->top == -1) {
+		printf("empty!\n");
+		return;
+	}
+	*e = s->data[s->top];
+	printf("got.(seq)\n");
 	return;
 }
 
@@ -127,17 +165,21 @@ void exp_to_postexp(char* exp, char* postexp, SeqStack* OptSt) {
 				Push_Seq(OptSt, ch);
 				i++;
 				break;
-		default:
-			if (ch >= '0' && ch <= '9') {
-				while(ch >= '0' && ch <= '9'){
-					strncat(postexp, &ch, 1);
-					ch = exp[++i];
+			case '.':
+				strncat(postexp, &ch, 1);
+				i++;
+				break;
+			default:
+				if (ch >= '0' && ch <= '9') {
+					while(ch >= '0' && ch <= '9'){
+						strncat(postexp, &ch, 1);
+						ch = exp[++i];
+					}
+				}else{
+					printf("wrong exp. please check.\n");
+					return;
 				}
-			}else{
-				printf("wrong exp. please check.\n");
-				return;
-			}
-			strncat(postexp, "#", 2);
+				strncat(postexp, "#", 2);
 		}
 	}
 	while (OptSt->top != -1) {
@@ -145,6 +187,67 @@ void exp_to_postexp(char* exp, char* postexp, SeqStack* OptSt) {
 		strncat(postexp, &recv, 1);
 	}
 	strncat(postexp, "\0", 1);
+}
+
+void postexp_calc(char* postexp){
+	OptNumStack OptNum;
+	OptNum.top = -1;
+	int i = 0;
+	double a = 0,b = 0,temp1 = 0,temp2 = 0,recv = 0;
+	char ch;
+	while((ch = postexp[i]) != '\0'){
+		switch (ch)
+		{
+		case '+':
+			Pop_OptNum(&OptNum,&a);
+			Pop_OptNum(&OptNum,&b);
+			Push_OptNum(&OptNum,a+b);
+			i++;
+			break;
+		case '-':
+			Pop_OptNum(&OptNum,&a);
+			Pop_OptNum(&OptNum,&b);
+			Push_OptNum(&OptNum,b-a);
+			i++;
+			break;
+		case '*':
+			Pop_OptNum(&OptNum,&a);
+			Pop_OptNum(&OptNum,&b);
+			Push_OptNum(&OptNum,a*b);
+			i++;
+			break;
+		case '/':
+			Pop_OptNum(&OptNum,&a);
+			Pop_OptNum(&OptNum,&b);
+			if(a == 0){
+				printf("cant div 0!\n");
+				return;
+			}
+			Push_OptNum(&OptNum,b/a);
+			i++;
+			break;
+		default:
+			if(ch == '.'){
+				int j = 1;
+				ch = postexp[++i];
+				while(ch >= '0' && ch <= '9'){
+					temp2 = temp2 / (10*j) + ch - '0';
+					ch = postexp[++i];
+					j++;
+				}
+			}
+			while(ch >= '0' && ch <= '9'){
+				temp1 = 10 * temp1 + ch - '0';
+				ch = postexp[++i];
+			}
+			Push_OptNum(&OptNum,temp1+temp2);
+			temp1 = temp2 = 0;
+			if(ch == '#') i++;
+			break;
+		}
+	}
+	GetTop_OptNum(&OptNum,&recv);
+	printf("%f",recv);
 }
 
 int main() {
@@ -164,5 +267,6 @@ int main() {
 	InitSeqStack(&OptSt);
 	exp_to_postexp(exp, postexp, &OptSt);
 	printf("%s\n", postexp);
+	postexp_calc(postexp);
 	return 0;
 }
