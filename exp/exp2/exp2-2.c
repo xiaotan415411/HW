@@ -24,35 +24,6 @@ void CreateLink(SLinkNode* head, int* data, int amount) {
 	}
 }
 
-//SLinkNode* DelDub(SLinkNode* head) {
-//	SLinkNode* fore = head, *patch = head;
-//	int cnt = 0,temp = 0;
-//	while (fore != 0) {
-//		temp = fore->data;
-//		cnt++;
-//		if (cnt >= 3) {
-//			patch = patch->next;
-//		}
-//		if (fore->next != 0 && fore->next->data == fore->data) {
-//			fore = fore->next;
-//			while (fore->data == patch->next->data) {
-//				if((fore = fore->next) == 0){
-//					patch->next = 0;
-//					return head;
-//				}
-//			}
-//			if (patch->next->data == head->data) {
-//				patch = head = fore;
-//			} else
-//				patch->next = fore;
-//			cnt = 1;
-//			continue;
-//		}
-//		fore = fore->next;
-//	}
-//	return head;
-//}
-
 SLinkNode* DelDub2(SLinkNode* head){
 	SLinkNode dum;
 	dum.next = head;
