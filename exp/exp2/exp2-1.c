@@ -11,35 +11,42 @@ typedef struct DNode{
 	struct DNode* next;
 }DLinkNode;
 
+ElemType GetNode(DLinkNode*,int);
 DLinkNode* InitDLink();
 void InsertNodeBehind(DLinkNode*,ElemType data,int position);
-ElemType GetNode(DLinkNode*,int);
 bool isEmpty(DLinkNode*);
 void DeleteNode(DLinkNode*,int position);
-void PrintLength(DLinkNode*);
-void InsertSortAscending(DLinkNode*);
+int GetLength(DLinkNode*);
+void PrintPosition(DLinkNode*,ElemType);
 void ShowList(DLinkNode*);
+void ReleaseList(DLinkNode*);
 
 ElemType data[MaxSize];
 int main(){ 
 	int begin,end;
-	DLinkNode* head = InitDLink();
+ 	DLinkNode* head = InitDLink();
 	InsertNodeBehind(head,'a',0);
-	InsertNodeBehind(head,'a',1);
-	InsertNodeBehind(head,'a',2);
-	InsertNodeBehind(head,'a',3);
-	InsertNodeBehind(head,'a',4);
+	InsertNodeBehind(head,'b',1);
+	InsertNodeBehind(head,'c',2);
+	InsertNodeBehind(head,'d',3);
+	InsertNodeBehind(head,'e',4);
 	ShowList(head);
 	printf("length is %d\n",GetLength(head));
 	printf("%d\n",isEmpty(head));
-	printf("%c\n",GetNode(head,3));
+	printf("the 3rd element is %c\n",GetNode(head,3));
 	PrintPosition(head,'a');
+	InsertNodeBehind(head,'f',3);
+	ShowList(head);
+	DeleteNode(head,3);
+	ShowList(head);
+	ReleaseList(head);
 	return 0;
 }
 
 DLinkNode* InitDLink(){
 	DLinkNode* s = (DLinkNode*)malloc(sizeof(DLinkNode));
 	s->next = 0;
+	printf("initialized.\n");
 	return s;
 }
 
@@ -69,7 +76,7 @@ ElemType GetNode(DLinkNode* head,int position){
 	return p->data;
 }
 
-void InsertNodeBehind(DLinkNode* link,ElemType data,int position){
+void InsertNodeBehind(DLinkNode* link,ElemType elem,int position){
 	if(position < 0){
 		printf("invalid position!\n");
 		return;
@@ -81,13 +88,13 @@ void InsertNodeBehind(DLinkNode* link,ElemType data,int position){
 		p = p->next;
 	}
 	s = (DLinkNode*)malloc(sizeof(DLinkNode));
-	s->data = data;
+	s->data = elem;
 	s->prev = p;
 	s->next = p->next;
 	if(p->next != 0)
 		p->next->prev = s;
 	p->next = s;
-	printf("insert %c successfully.\n",data);
+	printf("insert %c successfully.\n",elem);
 }
 
 void DeleteNode(DLinkNode* link,int position){
@@ -97,12 +104,6 @@ void DeleteNode(DLinkNode* link,int position){
 	}
 	DLinkNode* p = link->next;
 	int i = 1;
-//	if(position == 0){
-//		p->next->prev = 0;
-//		free(p);
-//		printf("Delete successfully.\n");
-//		return;
-//	}
 	while(i < position){
 		i++;
 		p = p->next;
@@ -141,6 +142,7 @@ void PrintPosition(DLinkNode* head,ElemType x){
 			printf("Node_%d ",cnt);
 		}
 	}
+	putchar('\n');
 }
 
 void ShowList(DLinkNode* head){
@@ -150,4 +152,14 @@ void ShowList(DLinkNode* head){
 		p = p->next;
 	}
 	putchar('\n');
+}
+
+void ReleaseList(DLinkNode* head){
+	DLinkNode* p = head,*q = head;
+	while((q = q->next) != 0){
+		free(p);
+		p = q;
+	}
+	free(q);
+	printf("Released.\n");
 }
