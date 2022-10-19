@@ -1,5 +1,5 @@
 #include<stdio.h>
-#define MaxSize 2
+#define MaxSize 100
 
 double data[MaxSize];
 double CalcAvg(double data[],int i){
@@ -15,5 +15,5 @@ double CalcAvg(double data[],int i){
 int main(){
 	for(int i = 0;i < MaxSize;i++)
 		data[i] = i + 1;
-	printf("%f\n",CalcAvg(data,MaxSize));
+	printf("the average is %.2f\n",CalcAvg(data,MaxSize));
 }
