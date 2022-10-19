@@ -40,7 +40,7 @@ void Push_Seq(SeqStack *s, Elemtype x)
 	}
 	s->top++;
 	s->data[s->top] = x;
-	printf("pushed %c.(seq)\n",x);
+	printf("pushed %c (seq)\n",x);
 	return;
 }
 
@@ -53,7 +53,7 @@ void Push_OptNum(OptNumStack *OptNum, double x)
 	}
 	OptNum->top++;
 	OptNum->data[OptNum->top] = x;
-	printf("pushed %f.(seq)\n",x);
+	printf("pushed %f (seq)\n",x);
 	return;
 }
 
@@ -63,7 +63,7 @@ void Push_Link(LinkStack *head, Elemtype x)
 	s->data = x;
 	s->next = head->next;
 	head->next = s;
-	printf("pushed.(link)\n");
+	printf("pushed (link)\n");
 	return;
 }
 
@@ -76,7 +76,7 @@ void Pop_Seq(SeqStack *s, Elemtype *e)
 	}
 	*e = s->data[s->top];
 	s->top--;
-	printf("popped %c.(seq)\n",*e);
+	printf("popped %c (seq)\n",*e);
 	return;
 }
 
@@ -91,7 +91,7 @@ void Pop_Link(LinkStack *head, Elemtype *e)
 	*e = p->data;
 	head->next = p->next;
 	free(p);
-	printf("popped %c.(link)\n",*e);
+	printf("popped %c (link)\n",*e);
 	return;
 }
 
@@ -104,7 +104,7 @@ void Pop_OptNum(OptNumStack *s, double *e)
 	}
 	*e = s->data[s->top];
 	s->top--;
-	printf("popped %f.(seq)\n",*e);
+	printf("popped %f (seq)\n",*e);
 	return;
 }
 
@@ -116,7 +116,7 @@ void GetTop_Seq(SeqStack *s, Elemtype *e)
 		return;
 	}
 	*e = s->data[s->top];
-	printf("got %c.(seq)\n",*e);
+	printf("got %c (seq)\n",*e);
 	return;
 }
 
@@ -128,7 +128,7 @@ void GetTop_Link(LinkStack *head, Elemtype *e)
 		return;
 	}
 	*e = head->next->data;
-	printf("got.(link)\n");
+	printf("got (link)\n");
 	return;
 }
 
@@ -140,11 +140,11 @@ void GetTop_OptNum(OptNumStack *s, double *e)
 		return;
 	}
 	*e = s->data[s->top];
-	printf("got %f.(seq)\n",*e);
+	printf("got %f (seq)\n",*e);
 	return;
 }
 
-void postexp_calc(char *postexp)
+double postexp_calc(char *postexp)
 {
 	OptNumStack OptNum;
 	OptNum.top = -1;
@@ -179,7 +179,7 @@ void postexp_calc(char *postexp)
 			if (a == 0)
 			{
 				printf("cant div 0!\n");
-				return;
+				return -1;
 			}
 			Push_OptNum(&OptNum, b / a);
 			i++;
@@ -210,12 +210,13 @@ void postexp_calc(char *postexp)
 		}
 	}
 	GetTop_OptNum(&OptNum, &recv);
-	printf("%f", recv);
+	// printf("%f", recv);
+	return recv;
 }
 
-void exp_to_postexp(char *exp, char *postexp, SeqStack *OptSt)
+double exp_to_postexp(char *exp, char *postexp, SeqStack *OptSt)
 {
-	int i = 0;
+	int i = 0,isMinus = 0;
 	char ch;
 	Elemtype recv;
 	while ((ch = exp[i]) != '\0')
@@ -233,7 +234,12 @@ void exp_to_postexp(char *exp, char *postexp, SeqStack *OptSt)
 			break;
 		case '+':
 		case '-':
-			while (OptSt->top != -1)
+			if(i == 0 || exp[i-1] < '0' || exp[i-1] > '9'){	//开头为减号或减号前一个不是数字
+				isMinus = 1;	//判定为负号
+				strncat(postexp,'!',1);	//追加一个特殊字符标记负数
+				continue;	//不再视为减号
+			}
+			while (OptSt->top != -1)	//否则按减号处理
 			{
 				if (OptSt->data[OptSt->top] != '(')
 				{
@@ -279,7 +285,7 @@ void exp_to_postexp(char *exp, char *postexp, SeqStack *OptSt)
 			else
 			{
 				printf("incorrect exp. please check.\n");
-				return;
+				return -1;
 			}
 			strncat(postexp, "#", 2);
 		}
@@ -289,12 +295,13 @@ void exp_to_postexp(char *exp, char *postexp, SeqStack *OptSt)
 		Pop_Seq(OptSt, &recv);
 		if(recv == '(' || recv == ')'){
 			printf("incorrect exp. please check.\n");
-			return;
+			return -1;
 		}
 		strncat(postexp, &recv, 1);
 	}
 	strncat(postexp, "\0", 1);
-//	postexp_calc(postexp);
+	printf("%s\n", postexp);
+	return postexp_calc(postexp);
 }
 
 
@@ -315,9 +322,10 @@ int main()
 	scanf("%s", exp);
 	SeqStack OptSt;
 	InitSeqStack(&OptSt);
-	exp_to_postexp(exp, postexp, &OptSt);
-	printf("%s\n", postexp);
-	postexp_calc(postexp);
+	// exp_to_postexp(exp, postexp, &OptSt);
+	// printf("%s\n", postexp);
+	// postexp_calc(postexp);
+	printf("%f\n",exp_to_postexp(exp,postexp,&OptSt));
 //	system("pause");
 	return 0;
 }
