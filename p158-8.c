@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define MaxSize 5
+#define MaxSize 10
 
 typedef int ElemType;
 typedef struct SNode {
@@ -21,9 +21,13 @@ void CreateLink(SLinkNode* head, int* data, int amount) {
 
 void traverseL(SLinkNode* L) {
     SLinkNode* p = L;
-    if (p->next != 0) {
+    if (p->next == 0) {
+        printf("%d ", p->data);
+        return;
+    } else {
         printf("%d ", p->data);
         traverseL(p->next);
+        return;
     }
 }
 
@@ -33,7 +37,7 @@ void traverseR(SLinkNode* L) {
         printf("%d ", p->data);
         return;
     } else {
-        traverseL(p->next);
+        traverseR(p->next);
         printf("%d ", p->data);
         return;
     }
@@ -50,5 +54,7 @@ int main() {
     InitData(data);
     link.data = data[0];
     CreateLink(&link, data, MaxSize); //创建不带头节点单链表
+    traverseL(&link);
+    putchar('\n');
     traverseR(&link);
 }
