@@ -47,5 +47,5 @@ int main() {
     ElemType pre[] = "ABDGCEF", mid[] = "DGBAECF";
     BTNode* b1;
     b1 = CreateBT1(pre, mid, 7);
-    PreOrder(b1,'F');
+    PreOrder(b1,'C');
 }
