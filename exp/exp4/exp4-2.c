@@ -101,7 +101,7 @@ int main() {
     printf("\n中序遍历\n");
     traverseMid(root);
 
-    printf("\n交换和先序遍历\n");
+    printf("\n交换后先序遍历\n");
     Swap(root);
     traversePre(root);
 
