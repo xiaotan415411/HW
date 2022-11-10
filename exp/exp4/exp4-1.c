@@ -54,7 +54,8 @@ void inQueue(SqQueue* queue, SonTreeNode* x) {
 void read(R* data) {
     FILE* fp = fopen("abc.bak", "r");
     char temp[35];
-    for (int i = 0; fgets(temp, 100, fp) != 0; i++) {
+    int i;
+    for (i = 0; fgets(temp, 100, fp) != 0; i++) {
         for (int j = 0; temp[j] != '\0'; j++) {
             if (temp[j] == ':') {           // 冒号后面的为孩子
                 data[i].parent[j++] = '\0'; // 在父母串后加\0
@@ -67,6 +68,10 @@ void read(R* data) {
             }
             data[i].parent[j] = temp[j]; // 没到冒号都是父母
         }
+    }
+    for(int a = 0;a < i;a++){
+        printf("parent:%-15s\tson:%-15s",data[a].parent,data[a].son);
+        putchar('\n');
     }
 }
 
@@ -227,7 +232,6 @@ int MostSon(SonTreeNode* root, int level, SqQueue* most) {
         return 0;
     int temp = 0;
     if (level == 0) {
-        // inQueue(most,root);
         return SonCnt(root, root->data, 1);
     }
     for (int i = 0; i < MaxSonCnt; i++) {
@@ -273,7 +277,7 @@ int main() {
     printf("\n(7) 求韩愈在哪所学校、哪个学院、哪个专业、哪个班\n");
     PrintRelation(root, "韩愈");
 
-    printf("\n(8) 求哪个班级人数最多\n");
+    printf("\n\n(8) 求哪个班级人数最多\n");
     SqQueue* most = (SqQueue*)malloc(sizeof(SqQueue));
     most->front = most->rear = 0;
     printf("最多人数有%d个的班级为", MostSon(root, 3, most));
