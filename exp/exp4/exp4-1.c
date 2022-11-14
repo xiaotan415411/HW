@@ -52,7 +52,7 @@ void inQueue(SqQueue* queue, SonTreeNode* x) {
 从文件中读取内容到数组里
 */
 void read(R* data) {
-    FILE* fp = fopen("abc.bak", "r");
+    FILE* fp = fopen("abc.txt", "r");
     char temp[35];
     int i;
     for (i = 0; fgets(temp, 100, fp) != 0; i++) {
@@ -60,7 +60,7 @@ void read(R* data) {
             if (temp[j] == ':') {           // 冒号后面的为孩子
                 data[i].parent[j++] = '\0'; // 在父母串后加\0
                 int k;
-                for (k = 0; temp[j] != '\0' && temp[j] != '\n'; k++, j++) {
+                for (k = 0; temp[j] != '\0' && temp[j] != '\n' && temp[j] != ' '; k++, j++) {
                     data[i].son[k] = temp[j];
                 }
                 data[i].son[k] = '\0'; // 在孩子串后加\0
