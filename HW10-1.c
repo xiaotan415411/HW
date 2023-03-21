@@ -103,6 +103,10 @@ int main() {
     }
     putchar('\n');
     printf("右左根:");
+    int post[] = {8,4,6,2,11,15,17,20, 10};
+    root = CreateBSerachTree(root, post, (sizeof(post) / sizeof(post[0])) - 1);
+    // traversePost(root);
+    putchar('\n');
     Divide(post, (sizeof(post) / sizeof(post[0])) - 1);
     for (int i = 0; i < (sizeof(post) / sizeof(post[0])); i++) {
         printf("%d ", post[i]);
